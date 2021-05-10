@@ -7,6 +7,6 @@ Currently my main language is C, so it may take a while until Java and Python al
 
 If you know as much as Jon Snow, here's how to compile the program:
 
-	`make`
+`make`
 
 and that's it, haha.
