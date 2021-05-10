@@ -129,7 +129,7 @@ int main()
 	}
 	else
 	{
-		printf("you selected decrypt\n");	
+		printf("Currently working on it in the development branch\n");	
 	}
 	return(0);
 }
