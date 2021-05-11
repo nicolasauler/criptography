@@ -1,20 +1,81 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define MAXCHAR 50
+#define MAXCHAR 1024
 
+void printInt(unsigned int hex[MAXCHAR], int length);
 void getXor(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR]);
 bool menu();
+bool menu2();
 bool getHexChar (char hex[MAXCHAR], int *cont);
 int conversion(char a);
+void hexToInt(char hex[MAXCHAR], char hexRes[MAXCHAR], int length);
 int getModule(int i, int j);
+void printChar(char string[MAXCHAR], int length);
+
+void hexToInt(char hex[MAXCHAR], char hexRes[MAXCHAR], int length)
+{
+	int cont;
+	printf("traducao abaixo:\n");
+	for(cont = 0; cont < (length); cont += 2)
+	{
+		hexRes[(cont/2)] = ((conversion(hex[cont])*16) + conversion(hex[cont+1]));
+		printf("%c", hexRes[(cont/2)]);
+	}
+	/* printChar(hexRes, length); */
+}
+
+void printChar(char string[MAXCHAR], int length)
+{
+	int cont;
+	for(cont = 0; cont < length; cont++)
+	{
+		printf("%c", string[cont]);
+	}
+	printf("\n");
+}
+
+void printInt(unsigned int hex[MAXCHAR], int length)
+{
+	int cont;
+	for(cont = 0; cont < length; cont++)
+	{
+		printf("%d", hex[cont]);
+	}
+	printf("\n");
+}
 
 bool menu()
 {
-	int opt;
 	bool option;
-	printf("Options:\n\t0 - Encryption\n\t1 - Decryption\n\nYour option: ");
-	scanf("%d", &opt);
+	int opt = 2;
+	do
+	{
+		printf("Options:\n\t0 - Encryption\n\t1 - Decryption\n\nYour option: ");
+		scanf("%d", &opt);
+		if((opt != 0) && (opt != 1))
+		{
+			printf("\nPlease input an option that exists\n");
+		}
+	} while((opt != 0) && (opt != 1));
+	getchar();
+	option = opt;
+	return(option);
+}
+
+bool menu2()
+{
+	bool option;
+	int opt = 2;
+	do
+	{
+		printf("Options:\n\t0 - I have the key\n\t1 - I don't have a key\n\nYour option: ");
+		scanf("%d", &opt);
+		if((opt != 0) && (opt != 1))
+		{
+			printf("\nPlease input an option that exists\n");
+		}
+	} while((opt != 0) && (opt != 1));
 	getchar();
 	option = opt;
 	return(option);
@@ -104,12 +165,15 @@ void getXor(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, un
 		hexXor[cont] = hexOne^hexTwo;
 		printf("%x", hexXor[cont]);
 	}
+	printf("\n\n");
 }
 
 int main()
 {
+	int cont;
+	unsigned int hexOne, hexTwo;
 	int i, j;
-	char hex1 [MAXCHAR], hex2 [MAXCHAR];
+	char hex1[MAXCHAR], hex2[MAXCHAR], hex3[MAXCHAR], hex4[MAXCHAR];
 	unsigned int hexXor[MAXCHAR];
 	i = j = 0;
 	if(!(menu()))
@@ -129,7 +193,35 @@ int main()
 	}
 	else
 	{
-		printf("Currently working on it in the development branch\n");	
+		printf("Your encrypted hex: ");
+		if(!(getHexChar(hex1, &i)))
+		{
+			return(-1);
+		}
+		printf("Your encrypted hex was:\n%s", hex1);
+		if(!(menu2()))
+		{
+			printf("Your key: ");
+			if(!(getHexChar(hex2, &j)))
+			{
+				return(-1);
+			}
+			printf("Your key was: \n%s", hex2);
+			hexToInt(hex1, hex3, i);
+			hexToInt(hex2, hex4, j);
+			for(cont = 0; cont < i/2; cont++)
+			{
+				hexOne = hex3[cont];
+				hexTwo = hex4[cont];
+				hexXor[cont] = hexOne^hexTwo;
+				printf("%x", hexXor[cont]);
+			}
+			/* getXor(hex3, hex4, i, j, hexXor); */
+			/*
+			getXor(hex1, hex2, i, j, hexXor);
+			printInt(hexXor, i);
+			*/
+		}
 	}
 	return(0);
 }
