@@ -1,2 +1,6 @@
 # Executables
 xor
+
+# Object files
+xor.o
+hexUtils.o
