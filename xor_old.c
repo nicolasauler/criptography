@@ -1,25 +1,29 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "hexUtils.h"
+#define MAXCHAR 1024
 
+void printInt(unsigned int hex[MAXCHAR], int length);
 void getXor0(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR]);
-void getXor1(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR]);
-void printChar(unsigned int string[MAXCHAR], int length);
+void getXor1(char hex3[MAXCHAR], char hex4[MAXCHAR], int length3, int length4, unsigned int hexXor[MAXCHAR]);
 bool menu();
 bool menu2();
+bool getHexChar (char hex[MAXCHAR], int *cont);
+int conversion(char a);
+void hexToInt(char hex[MAXCHAR], char hexRes[MAXCHAR], int length);
 int getModule(int i, int j);
+void printChar(unsigned int string[MAXCHAR], int length);
 
-int getModule(int i, int j)
+void hexToInt(char hex[MAXCHAR], char hexRes[MAXCHAR], int length)
 {
-	if(i > j)
+	int cont;
+	/* printf("traducao abaixo:\n"); */
+	for(cont = 0; cont < length; cont += 2)
 	{
-		return(i-j);
+		hexRes[(cont/2)] = ((conversion(hex[cont])*16) + conversion(hex[cont+1]));
+		/* printf("%c", hexRes[(cont/2)]); */
 	}
-	else
-	{
-		return(j-i);
-	}
+	/* printChar(hexRes, length); */
 }
 
 void printChar(unsigned int string[MAXCHAR], int length)
@@ -29,6 +33,16 @@ void printChar(unsigned int string[MAXCHAR], int length)
 	for(cont = 0; cont < length/2; cont++)
 	{
 		printf("%c", string[cont]);
+	}
+	printf("\n");
+}
+
+void printInt(unsigned int hex[MAXCHAR], int length)
+{
+	int cont;
+	for(cont = 0; cont < length; cont++)
+	{
+		printf("%d", hex[cont]);
 	}
 	printf("\n");
 }
@@ -69,6 +83,60 @@ bool menu2()
 	return(option);
 }
 
+int getModule(int i, int j)
+{
+	if(i > j)
+	{
+		return(i-j);
+	}
+	else
+	{
+		return(j-i);
+	}
+}
+
+int conversion(char a)
+{
+		if(a <= 57 && a >= 48)
+		{
+			return(a - 48);	
+		}
+		else if (a <= 70 && a >= 65)
+		{
+			return(a - 55);
+		}
+		else if (a <= 102 && a >= 97)
+		{
+			return(a - 87);
+		}
+		else
+		{
+			return(-1);
+		}
+}
+
+bool getHexChar (char hex[MAXCHAR], int *cont)
+{	
+	int tCont = *cont;
+	do
+	{
+		scanf("%c", &hex[tCont]);
+		if((hex[tCont] >= 65 && hex[tCont] <= 70) || (hex[tCont] <= 102 && hex[tCont] >= 97) || (hex[tCont] <= 57 && hex[tCont] >= 48) || (hex[tCont] == '\n'))
+		{
+		}
+		else
+		{
+			printf("Please input a Hexadecimal value\n");
+			return(0);
+		}
+		if(hex[tCont] != '\n')
+		{
+			tCont++;		
+		}
+	} while((hex[tCont] != '\n') && (tCont < MAXCHAR));
+	*cont = tCont;
+	return(1);
+}
 
 void getXor0(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR])
 {	
@@ -94,8 +162,8 @@ void getXor0(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, u
 	printf("Your values are:\n1\t%s\n2\t%s\n\n", hex1, hex2);
 	for(cont = 0; cont < length1; cont++)
 	{
-		hexOne = charToHex(hex1[cont]);
-		hexTwo = charToHex(hex2[cont]);
+		hexOne = conversion(hex1[cont]);
+		hexTwo = conversion(hex2[cont]);
 		hexXor[cont] = hexOne^hexTwo;
 		printf("%x", hexXor[cont]);
 	}
@@ -137,18 +205,18 @@ void getXor1(char hex3[MAXCHAR], char hex4[MAXCHAR], int length3, int length4, u
 int main()
 {
 	int i, j;
-	char hex1[MAXCHAR], hex2[MAXCHAR];
+	char hex1[MAXCHAR], hex2[MAXCHAR], hex3[MAXCHAR], hex4[MAXCHAR];
 	unsigned int hexXor[MAXCHAR];
 	i = j = 0;
 	if(!(menu()))
 	{
 		printf("Your first hex: ");
-		if(!(getHexAsString(hex1, &i)))
+		if(!(getHexChar(hex1, &i)))
 		{
 			return(-1);
 		}
 		printf("Your second hex: ");
-		if(!(getHexAsString(hex2, &j)))
+		if(!(getHexChar(hex2, &j)))
 		{
 			return(-1);
 		}
@@ -158,7 +226,7 @@ int main()
 	else
 	{
 		printf("Your encrypted hex: ");
-		if(!(getHexAsString(hex1, &i)))
+		if(!(getHexChar(hex1, &i)))
 		{
 			return(-1);
 		}
@@ -166,16 +234,21 @@ int main()
 		if(!(menu2()))
 		{
 			printf("Your key: ");
-			if(!(getHexAsString(hex2, &j)))
+			if(!(getHexChar(hex2, &j)))
 			{
 				return(-1);
 			}
 			printf("Your key was: \n%s", hex2);
-			hexToChar(hex1, i);
-			hexToChar(hex2, j);
-			getXor1(hex1, hex2, i, j, hexXor);
+			hexToInt(hex1, hex3, i);
+			hexToInt(hex2, hex4, j);
+			getXor1(hex3, hex4, i, j, hexXor);
 			printChar(hexXor, i);
 		}
+			/* getXor(hex3, hex4, i, j, hexXor); */
+			/*
+			getXor(hex1, hex2, i, j, hexXor);
+			printInt(hexXor, i);
+			*/
 	}
 	return(0);
 }
