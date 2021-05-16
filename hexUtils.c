@@ -3,12 +3,21 @@
 
 #include "hexUtils.h"
 
-void hexToChar(char hex[MAXCHAR], int length)
+int getModule(int i, int j)
+{
+	if(i > j)
+	{
+		return(i-j);
+	}
+	return(j-i);
+}
+
+void hexToDecimal(unsigned int hex[MAXCHAR], int length)
 {
 	int cont;
 	for(cont = 0; cont < length; cont += 2)
 	{
-		hex[(cont/2)] = ((charToHex(hex[cont])*16) + charToHex(hex[cont+1]));
+		hex[(cont/2)] = ((hex[cont]*16) + hex[cont+1]);
 	}
 }
 
@@ -48,6 +57,40 @@ bool getHexAsString (char hex[MAXCHAR], int *cont)
 			tCont++;		
 		}
 	} while((hex[tCont] != '\n') && (tCont < MAXCHAR));
+	hex[tCont] = '\0';
 	*cont = tCont;
 	return(1);
+}
+
+void getXor(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR])
+{	
+	int cont, mod;
+	unsigned int hexOne, hexTwo;
+	mod = getModule(length1, length2);
+	if(length1 > length2)
+	{
+		for(cont = 0; cont < mod; cont++)
+		{
+			hex2[cont+mod] = hex2[cont];
+			hex2[cont] = '0';
+		}
+	}
+	else if(length2 > length1) 
+	{
+		for(cont = 0; cont < mod; cont++)
+		{
+			hex1[cont+mod] = hex1[cont];
+			hex1[cont] = '0';
+		}
+	}
+	printf("\nYour values are:\n\nCipher\t%s\nKey\t%s\n\n", hex1, hex2);
+	printf("Xor(cipher^key) is:\n");
+	for(cont = 0; cont < length1; cont++)
+	{
+		hexOne = charToHex(hex1[cont]);
+		hexTwo = charToHex(hex2[cont]);
+		hexXor[cont] = hexOne^hexTwo;
+		printf("%x", hexXor[cont]);
+	}
+	printf("\n\n");
 }

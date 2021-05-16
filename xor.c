@@ -3,29 +3,35 @@
 
 #include "hexUtils.h"
 
-void getXor0(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR]);
-void getXor1(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR]);
-void printChar(unsigned int string[MAXCHAR], int length);
-bool menu();
-bool menu2();
-int getModule(int i, int j);
+/*********************************************************/
+/**                                                     **/
+/**       prototipos de funcoes e suas descricoes       **/
+/**                                                     **/
+/*********************************************************/
 
-int getModule(int i, int j)
-{
-	if(i > j)
-	{
-		return(i-j);
-	}
-	else
-	{
-		return(j-i);
-	}
-}
+/* Takes the hex-Xor produced by the getXor in the decrypt mode
+ * and prints the correspondent string, converting the hex to
+ * decimal, with the hexToDecimal function, so it prints with the
+ * correct ascii code */
+void printChar(unsigned int string[MAXCHAR], int length);
+
+/* Prints the mode menu (encryption or decryption) */
+bool menu();
+
+/* Prints the decryption menu (key or not to key haha) */
+bool menu2();
+
+/*********************************************************/
+/**                                                     **/
+/**           implementacao de funcoes extras           **/
+/**                                                     **/
+/*********************************************************/
 
 void printChar(unsigned int string[MAXCHAR], int length)
 {
 	int cont;
-	printf("Your phrase is: \n");
+	printf("Decrypted phrase is: \n");
+	hexToDecimal(string, length);
 	for(cont = 0; cont < length/2; cont++)
 	{
 		printf("%c", string[cont]);
@@ -57,7 +63,7 @@ bool menu2()
 	int opt = 2;
 	do
 	{
-		printf("Options:\n\t0 - I have the key\n\t1 - I don't have a key\n\nYour option: ");
+		printf("\nOptions:\n\t0 - I have the key\n\t1 - I don't have a key\n\nYour option: ");
 		scanf("%d", &opt);
 		if((opt != 0) && (opt != 1))
 		{
@@ -69,70 +75,11 @@ bool menu2()
 	return(option);
 }
 
-
-void getXor0(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR])
-{	
-	int cont, mod;
-	unsigned int hexOne, hexTwo;
-	mod = getModule(length1, length2);
-	if(length1 > length2)
-	{
-		for(cont = 0; cont < mod; cont++)
-		{
-			hex2[cont+mod] = hex2[cont];
-			hex2[cont] = '0';
-		}
-	}
-	else if(length2 > length1) 
-	{
-		for(cont = 0; cont < mod; cont++)
-		{
-			hex1[cont+mod] = hex1[cont];
-			hex1[cont] = '0';
-		}
-	}
-	printf("Your values are:\n1\t%s\n2\t%s\n\n", hex1, hex2);
-	for(cont = 0; cont < length1; cont++)
-	{
-		hexOne = charToHex(hex1[cont]);
-		hexTwo = charToHex(hex2[cont]);
-		hexXor[cont] = hexOne^hexTwo;
-		printf("%x", hexXor[cont]);
-	}
-	printf("\n\n");
-}
-
-void getXor1(char hex3[MAXCHAR], char hex4[MAXCHAR], int length3, int length4, unsigned int hexXor[MAXCHAR])
-{	
-	int cont, mod;
-	unsigned int hexOne, hexTwo;
-	mod = getModule(length3, length4);
-	if(length3 > length4)
-	{
-		for(cont = 0; cont < mod; cont++)
-		{
-			hex4[cont+mod] = hex4[cont];
-			hex4[cont] = '0';
-		}
-	}
-	else if(length4 > length3) 
-	{
-		for(cont = 0; cont < mod; cont++)
-		{
-			hex3[cont+mod] = hex3[cont];
-			hex3[cont] = '0';
-		}
-	}
-	printf("Your values are:\n1\t%s\n2\t%s\n\n", hex3, hex4);
-	for(cont = 0; cont < (length3/2); cont++)
-	{
-		hexOne = hex3[cont];
-		hexTwo = hex4[cont];
-		hexXor[cont] = hexOne^hexTwo;
-		printf("%x", hexXor[cont]);
-	}
-	printf("\n\n");	
-}
+/*********************************************************/
+/**                                                     **/
+/**                        main                         **/
+/**                                                     **/
+/*********************************************************/
 
 int main()
 {
@@ -142,7 +89,7 @@ int main()
 	i = j = 0;
 	if(!(menu()))
 	{
-		printf("Your first hex: ");
+		printf("Your first hex:  ");
 		if(!(getHexAsString(hex1, &i)))
 		{
 			return(-1);
@@ -153,7 +100,7 @@ int main()
 			return(-1);
 		}
 		printf("Your values were:\n1\t%s\n2\t%s\n", hex1, hex2);
-		getXor0(hex1, hex2, i, j, hexXor);
+		getXor(hex1, hex2, i, j, hexXor);
 	}
 	else
 	{
@@ -162,7 +109,7 @@ int main()
 		{
 			return(-1);
 		}
-		printf("Your encrypted hex was:\n%s", hex1);
+		printf("\nYour encrypted hex was: %s\n", hex1);
 		if(!(menu2()))
 		{
 			printf("Your key: ");
@@ -170,10 +117,8 @@ int main()
 			{
 				return(-1);
 			}
-			printf("Your key was: \n%s", hex2);
-			hexToChar(hex1, i);
-			hexToChar(hex2, j);
-			getXor1(hex1, hex2, i, j, hexXor);
+			printf("\nYour key was: %s\n", hex2);
+			getXor(hex1, hex2, i, j, hexXor);
 			printChar(hexXor, i);
 		}
 	}

@@ -4,3 +4,6 @@ xor
 # Object files
 xor.o
 hexUtils.o
+
+# Folders
+/reserve
