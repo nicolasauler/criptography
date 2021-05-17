@@ -26,3 +26,6 @@ int charToHex(char a);
 
 /* */
 void getXor(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, unsigned int hexXor[MAXCHAR]);
+
+/* */
+void decryptHex(char hex[MAXCHAR], int length, unsigned int letter[2], unsigned int hexXor[MAXCHAR]);

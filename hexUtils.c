@@ -94,3 +94,15 @@ void getXor(char hex1[MAXCHAR], char hex2[MAXCHAR], int length1, int length2, un
 	}
 	printf("\n\n");
 }
+
+void decryptHex(char hex[MAXCHAR], int length, unsigned int letter[2], unsigned int hexXor[MAXCHAR])
+{
+	int cont;
+	unsigned int hexBit;
+	for(cont = 0; cont < length; cont++)
+	{
+		hexBit = charToHex(hex[cont]);
+		hexXor[cont] = hexBit^letter[cont % 2];
+		printf("%x", hexXor[cont]);
+	}
+}

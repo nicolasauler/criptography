@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "cryptanalysis.h"
 #include "hexUtils.h"
 
 /*********************************************************/
@@ -21,6 +22,8 @@ bool menu();
 /* Prints the decryption menu (key or not to key haha) */
 bool menu2();
 
+bool menu3();
+
 /*********************************************************/
 /**                                                     **/
 /**           implementacao de funcoes extras           **/
@@ -30,7 +33,7 @@ bool menu2();
 void printChar(unsigned int string[MAXCHAR], int length)
 {
 	int cont;
-	printf("Decrypted phrase is: \n");
+	printf("\nDecrypted phrase is: \n");
 	hexToDecimal(string, length);
 	for(cont = 0; cont < length/2; cont++)
 	{
@@ -75,6 +78,24 @@ bool menu2()
 	return(option);
 }
 
+bool menu3()
+{
+	bool option;
+	int opt = 2;
+	do
+	{
+		printf("\nOptions:\n\t0 - Frequence Analysis\n\t1 - Brute Force\n\nYour option: ");
+		scanf("%d", &opt);
+		if((opt != 0) && (opt != 1))
+		{
+			printf("\nPlease input an option that exists\n");
+		}
+	} while((opt != 0) && (opt != 1));
+	getchar();
+	option = opt;
+	return(option);
+}
+
 /*********************************************************/
 /**                                                     **/
 /**                        main                         **/
@@ -84,8 +105,11 @@ bool menu2()
 int main()
 {
 	int i, j;
+	double letterAvg;
+	char answer;
 	char hex1[MAXCHAR], hex2[MAXCHAR];
 	unsigned int hexXor[MAXCHAR];
+	unsigned int letter[2] = {4, 1};
 	i = j = 0;
 	if(!(menu()))
 	{
@@ -120,6 +144,34 @@ int main()
 			printf("\nYour key was: %s\n", hex2);
 			getXor(hex1, hex2, i, j, hexXor);
 			printChar(hexXor, i);
+		}
+		else
+		{
+			if(!menu3())
+			{
+				
+			}
+			else
+			{
+				do
+				{ 
+					decryptHex(hex1, i, letter, hexXor);
+					printChar(hexXor, i);
+					printf("\nIs it the message you expected (y/[N])?  ");
+					do
+					{
+						/* scanf("%c", &answer); */
+						answer = getchar();
+						getchar();
+						if (answer != '\n' && answer != 'y' && answer != 'n' && answer != 'N' && answer != 'Y')
+						{
+							printf("\nUsage: 'y' or 'n'");
+							printf("\nIs it the message you expected (y/[N])?  ");
+						}
+					} while (answer != '\n' && answer != 'y' && answer != 'n' && answer != 'N' && answer != 'Y');
+					letter[1]++;
+				} while (answer != 'y' && answer != 'Y');
+			}
 		}
 	}
 	return(0);
