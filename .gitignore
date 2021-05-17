@@ -1,5 +1,6 @@
 # Executables
 xor
+test
 
 # Object files
 xor.o
@@ -8,3 +9,6 @@ hexUtils.o
 # Folders
 /reserve
 /testing
+
+# C files for just testing functions
+test.c
